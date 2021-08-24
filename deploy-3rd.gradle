@@ -1,0 +1,23 @@
+apply plugin: 'maven-publish'
+
+publishing {
+    repositories {
+        maven {
+            credentials {
+                username "${releaseGradleUsername}"
+                password "${releaseGradlePassword}"
+            }
+            url "${releaseRepoUrl}"
+        }
+    }
+
+    publications {
+        component(MavenPublication) {
+            groupId 'com.mizhousoft.androidx'
+            artifactId 'tencent-lite-player'
+            version '8.7.10102'
+
+            artifact '3rdparty-libs/LiteAVSDK_Player_8.7.10102.aar'
+        }
+    }
+}
