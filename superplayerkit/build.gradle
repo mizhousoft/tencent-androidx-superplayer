@@ -30,6 +30,6 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation 'com.mizhousoft.androidx:tencent-lite-player:8.7.10102'
+    implementation 'com.mizhousoft.thirdparty:tencent-lite-player:8.7.10102'
     implementation 'com.github.ctiao:DanmakuFlameMaster:0.5.3'
 }

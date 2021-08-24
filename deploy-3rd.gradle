@@ -13,7 +13,7 @@ publishing {
 
     publications {
         component(MavenPublication) {
-            groupId 'com.mizhousoft.androidx'
+            groupId 'com.mizhousoft.thirdparty'
             artifactId 'tencent-lite-player'
             version '8.7.10102'
 
