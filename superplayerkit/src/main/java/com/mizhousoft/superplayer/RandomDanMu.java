@@ -34,7 +34,7 @@ public class RandomDanMu
     {
         RandomDanMu.superPlayerView = superPlayerView;
 
-        TextView textView = superPlayerView.findViewById(R.id.superplayer_viewer_text);
+        TextView textView = superPlayerView.findViewById(R.id.superplayer_random_danmu);
         textView.setVisibility(View.VISIBLE);
         textView.setText(content);
 
@@ -52,7 +52,7 @@ public class RandomDanMu
 
     private static void randomLocation()
     {
-        TextView textView = RandomDanMu.superPlayerView.findViewById(R.id.superplayer_viewer_text);
+        TextView textView = RandomDanMu.superPlayerView.findViewById(R.id.superplayer_random_danmu);
         ViewGroup.LayoutParams params = textView.getLayoutParams();
         if (params instanceof RelativeLayout.LayoutParams)
         {
