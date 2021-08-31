@@ -22,6 +22,8 @@ public class RandomDanMu
 {
     private static final int MSG_ID = 1200;
 
+    private static final long DELAY_INTERNAL_TIME = 10 * 1000;
+
     private static SuperPlayerView superPlayerView;
 
     private static TimerHandler timerHandler;
@@ -40,7 +42,7 @@ public class RandomDanMu
         {
             RandomDanMu.timerHandler = new TimerHandler();
         }
-        RandomDanMu.timerHandler.sendEmptyMessageDelayed(MSG_ID, 5 * 1000);
+        RandomDanMu.timerHandler.sendEmptyMessageDelayed(MSG_ID, DELAY_INTERNAL_TIME);
     }
 
     public static void stop()
@@ -133,7 +135,7 @@ public class RandomDanMu
             {
                 randomLocation();
 
-                RandomDanMu.timerHandler.sendEmptyMessageDelayed(MSG_ID, 5 * 1000);
+                RandomDanMu.timerHandler.sendEmptyMessageDelayed(MSG_ID, DELAY_INTERNAL_TIME);
             }
             catch (Throwable e)
             {
