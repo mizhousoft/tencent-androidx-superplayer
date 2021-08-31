@@ -30,6 +30,8 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+    implementation 'androidx.annotation:annotation:1.2.0'
+
     implementation 'com.mizhousoft.thirdparty:androidx-tencent-lite-player:8.9.10349'
     implementation 'com.github.ctiao:DanmakuFlameMaster:0.9.25'
 }
