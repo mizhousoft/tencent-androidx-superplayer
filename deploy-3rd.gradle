@@ -15,9 +15,9 @@ publishing {
         component(MavenPublication) {
             groupId 'com.mizhousoft.thirdparty'
             artifactId 'androidx-tencent-lite-player'
-            version '8.7.10102'
+            version '8.9.10349'
 
-            artifact '3rdparty-libs/LiteAVSDK_Player_8.7.10102.aar'
+            artifact '3rdparty-libs/LiteAVSDK_Player_8.9.10349.aar'
         }
     }
 }
