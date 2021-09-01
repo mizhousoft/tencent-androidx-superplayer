@@ -34,6 +34,10 @@ public class RandomDanMu
 
     private String danMuContent;
 
+    private Location currentLocation = Location.RightBottom;
+
+    private long lastMoveMs = 0;
+
     private List<Location> selectableList = new ArrayList<>(Arrays.asList(Location.values()));
 
     public RandomDanMu(SuperPlayerView superPlayerView, String danMuContent, boolean isFullScreen)
@@ -56,8 +60,9 @@ public class RandomDanMu
         textView.setVisibility(View.VISIBLE);
         textView.setText(this.danMuContent);
 
-        randomLocation();
+        moveTo(this.currentLocation);
 
+        timerHandler.removeMessages(MSG_ID);
         timerHandler.sendEmptyMessageDelayed(MSG_ID, this.internalDelayMs);
     }
 
@@ -65,9 +70,11 @@ public class RandomDanMu
     {
         this.isFullScreen = isFullScreen;
 
-        timerHandler.removeMessages(MSG_ID);
+        TextView textView = this.superPlayerView.findViewById(R.id.superplayer_random_danmu);
+        textView.setVisibility(View.VISIBLE);
+        textView.setText(this.danMuContent);
 
-        start();
+        moveTo(this.currentLocation);
     }
 
     public void stop()
@@ -75,14 +82,12 @@ public class RandomDanMu
         timerHandler.removeMessages(MSG_ID);
     }
 
-    private void randomLocation()
+    private void moveTo(Location location)
     {
         TextView textView = superPlayerView.findViewById(R.id.superplayer_random_danmu);
         ViewGroup.LayoutParams params = textView.getLayoutParams();
         if (params instanceof RelativeLayout.LayoutParams)
         {
-            Location location = getRandomLocation();
-
             RelativeLayout.LayoutParams layoutParams = ((RelativeLayout.LayoutParams) params);
             layoutParams = remakeLayoutParams(location, layoutParams);
             textView.setLayoutParams(layoutParams);
@@ -139,7 +144,7 @@ public class RandomDanMu
         return layoutParams;
     }
 
-    public Location getRandomLocation()
+    public Location getNextLocation()
     {
         if (selectableList.isEmpty())
         {
@@ -166,7 +171,15 @@ public class RandomDanMu
 
             try
             {
-                randomLocation();
+                long now = System.currentTimeMillis();
+                long offset = now - lastMoveMs;
+                if (offset > (internalDelayMs - 2000))
+                {
+                    currentLocation = getNextLocation();
+                    lastMoveMs = now;
+                }
+
+                moveTo(currentLocation);
 
                 timerHandler.sendEmptyMessageDelayed(MSG_ID, internalDelayMs);
             }
