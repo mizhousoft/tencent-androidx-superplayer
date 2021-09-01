@@ -24,35 +24,48 @@ public class RandomDanMu
 
     private static final long DELAY_INTERNAL_TIME = 10 * 1000;
 
-    private static SuperPlayerView superPlayerView;
+    private SuperPlayerView superPlayerView;
 
-    private static TimerHandler timerHandler;
+    private TimerHandler timerHandler;
 
-    private static List<Location> selectableList = new ArrayList<>(Arrays.asList(Location.values()));
+    private long defaultInternalDelayMs = DELAY_INTERNAL_TIME;
 
-    public static void start(SuperPlayerView superPlayerView, String content)
+    private boolean isFullScreen;
+
+    private List<Location> selectableList = new ArrayList<>(Arrays.asList(Location.values()));
+
+    public void start(SuperPlayerView superPlayerView, String content, boolean isFullScreen)
     {
-        RandomDanMu.superPlayerView = superPlayerView;
+        start(superPlayerView, content, isFullScreen, DELAY_INTERNAL_TIME);
+    }
+
+    public void start(SuperPlayerView superPlayerView, String content, boolean isFullScreen, long internalDelayMs)
+    {
+        this.superPlayerView = superPlayerView;
+        this.defaultInternalDelayMs = internalDelayMs;
+        this.isFullScreen = isFullScreen;
 
         TextView textView = superPlayerView.findViewById(R.id.superplayer_random_danmu);
         textView.setVisibility(View.VISIBLE);
         textView.setText(content);
 
-        if (null == RandomDanMu.timerHandler)
+        if (null == timerHandler)
         {
-            RandomDanMu.timerHandler = new TimerHandler();
+            timerHandler = new TimerHandler();
         }
-        RandomDanMu.timerHandler.sendEmptyMessageDelayed(MSG_ID, DELAY_INTERNAL_TIME);
+
+        randomLocation();
+        timerHandler.sendEmptyMessageDelayed(MSG_ID, this.defaultInternalDelayMs);
     }
 
-    public static void stop()
+    public void stop()
     {
-        RandomDanMu.timerHandler.removeMessages(MSG_ID);
+        timerHandler.removeMessages(MSG_ID);
     }
 
-    private static void randomLocation()
+    private void randomLocation()
     {
-        TextView textView = RandomDanMu.superPlayerView.findViewById(R.id.superplayer_random_danmu);
+        TextView textView = superPlayerView.findViewById(R.id.superplayer_random_danmu);
         ViewGroup.LayoutParams params = textView.getLayoutParams();
         if (params instanceof RelativeLayout.LayoutParams)
         {
@@ -64,7 +77,7 @@ public class RandomDanMu
         }
     }
 
-    private static RelativeLayout.LayoutParams remakeLayoutParams(Location location, RelativeLayout.LayoutParams layoutParams)
+    private RelativeLayout.LayoutParams remakeLayoutParams(Location location, RelativeLayout.LayoutParams layoutParams)
     {
         layoutParams.removeRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         layoutParams.removeRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
@@ -74,30 +87,33 @@ public class RandomDanMu
         layoutParams.removeRule(RelativeLayout.CENTER_VERTICAL);
         layoutParams.removeRule(RelativeLayout.CENTER_IN_PARENT);
 
+        int horizontalOffset = this.isFullScreen ? 120 : 60;
+        int verticalOffset = this.isFullScreen ? 150 : 75;
+
         if (location.equals(Location.RightBottom))
         {
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-            layoutParams.setMargins(0, 0, 120, 150);
+            layoutParams.setMargins(0, 0, horizontalOffset, verticalOffset);
         }
         else if (location.equals(Location.RightTop))
         {
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-            layoutParams.setMargins(0, 150, 120, 0);
+            layoutParams.setMargins(0, verticalOffset, horizontalOffset, 0);
         }
         else if (location.equals(Location.LeftBottom))
         {
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-            layoutParams.setMargins(120, 0, 0, 150);
+            layoutParams.setMargins(horizontalOffset, 0, 0, verticalOffset);
             layoutParams.removeRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         }
         else if (location.equals(Location.LeftTop))
         {
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-            layoutParams.setMargins(120, 150, 0, 0);
+            layoutParams.setMargins(horizontalOffset, verticalOffset, 0, 0);
             layoutParams.removeRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         }
         else
@@ -111,20 +127,20 @@ public class RandomDanMu
         return layoutParams;
     }
 
-    public static Location getRandomLocation()
+    public Location getRandomLocation()
     {
-        if (RandomDanMu.selectableList.isEmpty())
+        if (selectableList.isEmpty())
         {
-            RandomDanMu.selectableList = new ArrayList<>(Arrays.asList(Location.values()));
+            selectableList = new ArrayList<>(Arrays.asList(Location.values()));
         }
 
-        int rnd = new SecureRandom().nextInt(RandomDanMu.selectableList.size());
+        int rnd = new SecureRandom().nextInt(selectableList.size());
         Location value = selectableList.remove(rnd);
 
         return value;
     }
 
-    private static class TimerHandler extends Handler
+    private class TimerHandler extends Handler
     {
         @Override
         public void handleMessage(@NonNull Message msg)
@@ -135,7 +151,7 @@ public class RandomDanMu
             {
                 randomLocation();
 
-                RandomDanMu.timerHandler.sendEmptyMessageDelayed(MSG_ID, DELAY_INTERNAL_TIME);
+                timerHandler.sendEmptyMessageDelayed(MSG_ID, defaultInternalDelayMs);
             }
             catch (Throwable e)
             {
