@@ -6,11 +6,13 @@ public class VideoPlayerViewCallback implements SuperPlayerView.OnSuperPlayerVie
 {
     private VideoPlayActivity activity;
 
-    private RandomDanMu randomDanMu = new RandomDanMu();
+    public RandomDanMu randomDanMu;
 
     public VideoPlayerViewCallback(VideoPlayActivity activity)
     {
         this.activity = activity;
+
+        randomDanMu = new RandomDanMu(this.activity.superPlayerView, "1890xxxx3332正在观看视频", false);
     }
 
     @Override
@@ -22,13 +24,13 @@ public class VideoPlayerViewCallback implements SuperPlayerView.OnSuperPlayerVie
     @Override
     public void onStartFullScreenPlay()
     {
-        randomDanMu.start(activity.superPlayerView, "1890xxxx3332正在观看视频", true);
+        randomDanMu.fullscreen(true);
     }
 
     @Override
     public void onStopFullScreenPlay()
     {
-        randomDanMu.stop();
+        randomDanMu.fullscreen(false);
     }
 
     @Override
@@ -52,30 +54,31 @@ public class VideoPlayerViewCallback implements SuperPlayerView.OnSuperPlayerVie
     @Override
     public void onPlayBegin()
     {
-
+        randomDanMu.setDanMuContent("1390xxxx3332正在观看视频");
+        randomDanMu.start();
     }
 
     @Override
     public void onPlayPause()
     {
-
+        randomDanMu.stop();
     }
 
     @Override
     public void onPlayResume()
     {
-
+        randomDanMu.start();
     }
 
     @Override
     public void onPlayRestart()
     {
-
+        randomDanMu.start();
     }
 
     @Override
     public void onPlayEnd()
     {
-
+        randomDanMu.stop();
     }
 }

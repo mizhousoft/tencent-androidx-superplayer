@@ -15,8 +15,6 @@ public class VideoPlayActivity extends AppCompatActivity
 {
     public SuperPlayerView superPlayerView;
 
-    private RandomDanMu randomDanMu = new RandomDanMu();
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -41,8 +39,6 @@ public class VideoPlayActivity extends AppCompatActivity
         model.title = "测试视频";
         model.url = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4";
         superPlayerView.playWithModel(model);
-
-        randomDanMu.start(this.superPlayerView, "1890xxxx3332正在观看视频", false);
     }
 
     @Override
@@ -82,7 +78,6 @@ public class VideoPlayActivity extends AppCompatActivity
     {
         super.onDestroy();
 
-        randomDanMu.stop();
         superPlayerView.release();
         if (superPlayerView.getPlayerMode() != SuperPlayerDef.PlayerMode.FLOAT)
         {

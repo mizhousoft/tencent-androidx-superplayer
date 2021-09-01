@@ -28,34 +28,46 @@ public class RandomDanMu
 
     private TimerHandler timerHandler;
 
-    private long defaultInternalDelayMs = DELAY_INTERNAL_TIME;
+    private long internalDelayMs = DELAY_INTERNAL_TIME;
 
     private boolean isFullScreen;
 
+    private String danMuContent;
+
     private List<Location> selectableList = new ArrayList<>(Arrays.asList(Location.values()));
 
-    public void start(SuperPlayerView superPlayerView, String content, boolean isFullScreen)
+    public RandomDanMu(SuperPlayerView superPlayerView, String danMuContent, boolean isFullScreen)
     {
-        start(superPlayerView, content, isFullScreen, DELAY_INTERNAL_TIME);
+        this(superPlayerView, danMuContent, isFullScreen, DELAY_INTERNAL_TIME);
     }
 
-    public void start(SuperPlayerView superPlayerView, String content, boolean isFullScreen, long internalDelayMs)
+    public RandomDanMu(SuperPlayerView superPlayerView, String danMuContent, boolean isFullScreen, long internalDelayMs)
     {
         this.superPlayerView = superPlayerView;
-        this.defaultInternalDelayMs = internalDelayMs;
+        this.danMuContent = danMuContent;
         this.isFullScreen = isFullScreen;
+        this.internalDelayMs = internalDelayMs;
+        this.timerHandler = new TimerHandler();
+    }
 
-        TextView textView = superPlayerView.findViewById(R.id.superplayer_random_danmu);
+    public void start()
+    {
+        TextView textView = this.superPlayerView.findViewById(R.id.superplayer_random_danmu);
         textView.setVisibility(View.VISIBLE);
-        textView.setText(content);
-
-        if (null == timerHandler)
-        {
-            timerHandler = new TimerHandler();
-        }
+        textView.setText(this.danMuContent);
 
         randomLocation();
-        timerHandler.sendEmptyMessageDelayed(MSG_ID, this.defaultInternalDelayMs);
+
+        timerHandler.sendEmptyMessageDelayed(MSG_ID, this.internalDelayMs);
+    }
+
+    public void fullscreen(boolean isFullScreen)
+    {
+        this.isFullScreen = isFullScreen;
+
+        timerHandler.removeMessages(MSG_ID);
+
+        start();
     }
 
     public void stop()
@@ -140,6 +152,11 @@ public class RandomDanMu
         return value;
     }
 
+    public void setDanMuContent(String danMuContent)
+    {
+        this.danMuContent = danMuContent;
+    }
+
     private class TimerHandler extends Handler
     {
         @Override
@@ -151,7 +168,7 @@ public class RandomDanMu
             {
                 randomLocation();
 
-                timerHandler.sendEmptyMessageDelayed(MSG_ID, defaultInternalDelayMs);
+                timerHandler.sendEmptyMessageDelayed(MSG_ID, internalDelayMs);
             }
             catch (Throwable e)
             {
