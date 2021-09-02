@@ -54,7 +54,7 @@ public class RandomDanMu
         this.timerHandler = new TimerHandler();
     }
 
-    public void start()
+    public synchronized void start()
     {
         TextView textView = this.superPlayerView.findViewById(R.id.superplayer_random_danmu);
         textView.setVisibility(View.VISIBLE);
@@ -66,7 +66,7 @@ public class RandomDanMu
         timerHandler.sendEmptyMessageDelayed(MSG_ID, this.internalDelayMs);
     }
 
-    public void fullscreen(boolean isFullScreen)
+    public synchronized void fullscreen(boolean isFullScreen)
     {
         this.isFullScreen = isFullScreen;
 
@@ -77,9 +77,14 @@ public class RandomDanMu
         moveTo(this.currentLocation);
     }
 
-    public void stop()
+    public synchronized void stop()
     {
         timerHandler.removeMessages(MSG_ID);
+    }
+
+    public void setDanMuContent(String danMuContent)
+    {
+        this.danMuContent = danMuContent;
     }
 
     private void moveTo(Location location)
@@ -144,7 +149,7 @@ public class RandomDanMu
         return layoutParams;
     }
 
-    public Location getNextLocation()
+    private Location getNextLocation()
     {
         if (selectableList.isEmpty())
         {
@@ -155,11 +160,6 @@ public class RandomDanMu
         Location value = selectableList.remove(rnd);
 
         return value;
-    }
-
-    public void setDanMuContent(String danMuContent)
-    {
-        this.danMuContent = danMuContent;
     }
 
     private class TimerHandler extends Handler
