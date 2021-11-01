@@ -41,42 +41,35 @@ import java.util.List;
 
 public class SuperPlayerImpl implements SuperPlayer, ITXVodPlayListener, ITXLivePlayListener {
 
-    private static final String TAG = "SuperPlayerImpl";
-    private static final int SUPERPLAYER_MODE = 1;
-    private static final int SUPPORT_MAJOR_VERSION = 8;
-    private static final int SUPPORT_MINOR_VERSION = 5;
+    private static final String TAG                   = "SuperPlayerImpl";
+    private static final int    SUPERPLAYER_MODE      = 1;
+    private static final int    SUPPORT_MAJOR_VERSION = 8;
+    private static final int    SUPPORT_MINOR_VERSION = 5;
 
-    private Context mContext;
-    private TXCloudVideoView mVideoView;        // 腾讯云视频播放view
-
-    private IPlayInfoProtocol mCurrentProtocol; // 当前视频信息协议类
-    private TXVodPlayer       mVodPlayer;       // 点播播放器
-    private TXVodPlayConfig   mVodPlayConfig;   // 点播播放器配置
-    private TXLivePlayer      mLivePlayer;      // 直播播放器
-    private TXLivePlayConfig  mLivePlayConfig;  // 直播播放器配置
-
-    private SuperPlayerModel    mCurrentModel;  // 当前播放的model
-    private SuperPlayerObserver mObserver;
-    private VideoQuality        mVideoQuality;
-
-    private SuperPlayerDef.PlayerType mCurrentPlayType   = SuperPlayerDef.PlayerType.VOD;       // 当前播放类型
-    private SuperPlayerDef.PlayerMode mCurrentPlayMode   = SuperPlayerDef.PlayerMode.WINDOW;    // 当前播放模式
-    private SuperPlayerDef.PlayerState mCurrentPlayState = SuperPlayerDef.PlayerState.PLAYING;  // 当前播放状态
-
-    private String mCurrentPlayVideoURL;    // 当前播放的URL
-
-    private int mSeekPos;                   // 记录切换硬解时的播放时间
-
-    private long mReportLiveStartTime = -1; // 直播开始时间，用于上报使用时长
-    private long mReportVodStartTime = -1;  // 点播开始时间，用于上报使用时长
-    private long mMaxLiveProgressTime;      // 观看直播的最大时长
-
-    private boolean mIsMultiBitrateStream;  // 是否是多码流url播放
-    private boolean mIsPlayWithFileId;      // 是否是腾讯云fileId播放
-    private boolean mDefaultQualitySet;     // 标记播放多码流url时是否设置过默认画质
-    private boolean mChangeHWAcceleration;  // 切换硬解后接收到第一个关键帧前的标记位
-    private String mFileId;
-    private int mAppId;
+    private Context                    mContext;
+    private TXCloudVideoView           mVideoView;        // 腾讯云视频播放view
+    private IPlayInfoProtocol          mCurrentProtocol; // 当前视频信息协议类
+    private TXVodPlayer                mVodPlayer;       // 点播播放器
+    private TXVodPlayConfig            mVodPlayConfig;   // 点播播放器配置
+    private TXLivePlayer               mLivePlayer;      // 直播播放器
+    private TXLivePlayConfig           mLivePlayConfig;  // 直播播放器配置
+    private SuperPlayerModel           mCurrentModel;  // 当前播放的model
+    private SuperPlayerObserver        mObserver;
+    private VideoQuality               mVideoQuality;
+    private SuperPlayerDef.PlayerType  mCurrentPlayType     = SuperPlayerDef.PlayerType.VOD;       // 当前播放类型
+    private SuperPlayerDef.PlayerMode  mCurrentPlayMode     = SuperPlayerDef.PlayerMode.WINDOW;    // 当前播放模式
+    private SuperPlayerDef.PlayerState mCurrentPlayState    = SuperPlayerDef.PlayerState.PLAYING;  // 当前播放状态
+    private String                     mCurrentPlayVideoURL;    // 当前播放的URL
+    private int                        mSeekPos;                   // 记录切换硬解时的播放时间
+    private long                       mReportLiveStartTime = -1; // 直播开始时间，用于上报使用时长
+    private long                       mReportVodStartTime  = -1;  // 点播开始时间，用于上报使用时长
+    private long                       mMaxLiveProgressTime;      // 观看直播的最大时长
+    private boolean                    mIsMultiBitrateStream;  // 是否是多码流url播放
+    private boolean                    mIsPlayWithFileId;      // 是否是腾讯云fileId播放
+    private boolean                    mDefaultQualitySet;     // 标记播放多码流url时是否设置过默认画质
+    private boolean                    mChangeHWAcceleration;  // 切换硬解后接收到第一个关键帧前的标记位
+    private String                     mFileId;
+    private int                        mAppId;
 
     public SuperPlayerImpl(Context context, TXCloudVideoView videoView) {
         initialize(context, videoView);
@@ -184,6 +177,7 @@ public class SuperPlayerImpl implements SuperPlayer, ITXVodPlayListener, ITXLive
                         videoQualities.add(quality);
                     }
                     if (!mDefaultQualitySet) {
+                        mVodPlayer.getDuration();
                         mVodPlayer.setBitrateIndex(bitrateItems.get(bitrateItems.size() - 1).index); //默认播放码率最高的
                         mDefaultQualitySet = true;
                     }
@@ -286,6 +280,7 @@ public class SuperPlayerImpl implements SuperPlayer, ITXVodPlayListener, ITXLive
         if (model.videoId != null) {
             params.fileId = model.videoId.fileId;
             params.videoId = model.videoId;
+            params.videoId.pSign = model.videoId.pSign;
             mCurrentProtocol = new PlayInfoProtocolV4(params);
         } else if (model.videoIdV2 != null) {
             params.fileId = model.videoIdV2.fileId;
@@ -304,6 +299,12 @@ public class SuperPlayerImpl implements SuperPlayer, ITXVodPlayListener, ITXLive
                     TXCLog.i(TAG, "onSuccess: protocol params = " + param.toString());
                     mReportVodStartTime = System.currentTimeMillis();
                     mVodPlayer.setPlayerView(mVideoView);
+                    // 设置HLS安全加固加解密参数
+                    if (param != null && param.videoId != null) {
+                        if (!TextUtils.isEmpty(param.videoId.overlayKey) && !TextUtils.isEmpty(param.videoId.overlayIv)) {
+                            setOverlayKeyIv(param.videoId.overlayKey, param.videoId.overlayIv);
+                        }
+                    }
                     playModeVideo(mCurrentProtocol);
                     updatePlayerType(SuperPlayerDef.PlayerType.VOD);
                     updatePlayProgress(0, 0);
@@ -358,6 +359,19 @@ public class SuperPlayerImpl implements SuperPlayer, ITXVodPlayListener, ITXLive
             updatePlayProgress(0, 0);
             updateVideoQualityList(videoQualities, defaultVideoQuality);
         }
+    }
+
+    /**
+     * 设置HLS安全加固加解密参数
+     * @param overlayKey HLS安全加固加解密key stop时重置为null
+     * @param overlayIv  HLS安全加固加解密Iv  stop时重置为null
+     */
+    private void setOverlayKeyIv(String overlayKey, String overlayIv) {
+        if (mVodPlayConfig == null) {
+            mVodPlayConfig = new TXVodPlayConfig();
+        }
+        mVodPlayConfig.setOverlayKey(overlayKey);
+        mVodPlayConfig.setOverlayIv(overlayIv);
     }
 
     /**
@@ -427,17 +441,17 @@ public class SuperPlayerImpl implements SuperPlayer, ITXVodPlayListener, ITXLive
                 TXCLog.d(TAG, "TOKEN: " + mCurrentProtocol.getToken());
                 mVodPlayer.setToken(mCurrentProtocol.getToken());
                 String type = mCurrentProtocol.getDRMType();
-                if (type!=null && !type.isEmpty()) {
+                if (type != null && !type.isEmpty()) {
                     drmType = type;
                 }
             } else {
                 mVodPlayer.setToken(null);
             }
             int ret = 0;
-            if (isVersionSupportAppendUrl()) {
+            if (!TextUtils.isEmpty(mFileId) && mAppId != 0 && isVersionSupportAppendUrl()) {
                 Uri uri = Uri.parse(url);
                 String query = uri.getQuery();
-                if(query==null || query.isEmpty()) {
+                if (query == null || query.isEmpty()) {
                     query = "";
                 } else {
                     query = query + "&";
@@ -468,17 +482,16 @@ public class SuperPlayerImpl implements SuperPlayer, ITXVodPlayListener, ITXLive
         }
         int majorVer = 0;
         int minorVer = 0;
-        try{
+        try {
             majorVer = Integer.parseInt(strVers[0]);
             minorVer = Integer.parseInt(strVers[1]);
-        }
-        catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             TXCLog.e(TAG, "parse version failed.", e);
             majorVer = 0;
             minorVer = 0;
         }
         Log.i(TAG, strVersion + " , " + majorVer + " , " + minorVer);
-        return majorVer > SUPPORT_MAJOR_VERSION || (majorVer == SUPPORT_MAJOR_VERSION && minorVer >= SUPPORT_MINOR_VERSION) ;
+        return majorVer > SUPPORT_MAJOR_VERSION || (majorVer == SUPPORT_MAJOR_VERSION && minorVer >= SUPPORT_MINOR_VERSION);
     }
 
     /**
@@ -746,7 +759,10 @@ public class SuperPlayerImpl implements SuperPlayer, ITXVodPlayListener, ITXLive
         }
         if (mLivePlayer != null) {
             mLivePlayer.stopPlay(false);
-            mVideoView.removeVideoView();
+        }
+        // 重置overlayKey和overlayIv配置
+        if (mVodPlayConfig != null) {
+            setOverlayKeyIv(null, null);
         }
         updatePlayerState(SuperPlayerDef.PlayerState.END);
         reportPlayTime();

@@ -2,8 +2,6 @@
 apply from: "version.gradle"
 apply from: "credentials.gradle"
 
-apply from: "deploy-3rd.gradle"
-
 buildscript {
 
     repositories {
