@@ -1,5 +1,6 @@
 package com.mizhousoft.superplayer;
 
+import com.mizhousoft.widget.toast.SimplexToast;
 import com.tencent.liteav.demo.superplayer.SuperPlayerView;
 
 public class VideoPlayerViewCallback implements SuperPlayerView.OnSuperPlayerViewCallback
@@ -80,5 +81,18 @@ public class VideoPlayerViewCallback implements SuperPlayerView.OnSuperPlayerVie
     public void onPlayEnd()
     {
         randomDanMu.stop();
+    }
+
+    @Override
+    public void error(int code, String message)
+    {
+        if (TXVideoConstants.PLAY_ERR_NET_DISCONNECT_1 == code || TXVideoConstants.PLAY_ERR_NET_DISCONNECT_2 == code)
+        {
+            SimplexToast.show("网络断连，且经多次重连亦不能恢复，更多重试请自行重启播放。");
+        }
+        else
+        {
+            SimplexToast.show(message);
+        }
     }
 }

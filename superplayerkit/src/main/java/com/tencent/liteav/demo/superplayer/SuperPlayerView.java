@@ -678,6 +678,8 @@ public class SuperPlayerView extends RelativeLayout {
          * 播放停止
          */
         void onPlayEnd();
+
+        void error(int code, String message);
     }
 
     public void release() {
@@ -838,7 +840,9 @@ public class SuperPlayerView extends RelativeLayout {
 
         @Override
         public void onError(int code, String message) {
-            showToast(message);
+            if(mPlayerViewCallback != null){
+                mPlayerViewCallback.error(code, message);
+            }
         }
     };
 

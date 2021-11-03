@@ -37,7 +37,7 @@ public class VideoPlayActivity extends AppCompatActivity
 
         SuperPlayerModel model = new SuperPlayerModel();
         model.title = "测试视频";
-        model.url = "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4";
+        model.url = "https://dev.mizhousoft.com/mpapi/big_buck_bunny.mp4";
         superPlayerView.playWithModel(model);
     }
 
