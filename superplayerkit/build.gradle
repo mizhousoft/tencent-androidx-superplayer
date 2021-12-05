@@ -32,6 +32,6 @@ dependencies {
 
     implementation 'androidx.annotation:annotation:1.2.0'
 
-    implementation 'com.tencent.liteav:LiteAVSDK_Player:9.2.10641'
+    implementation 'com.tencent.liteav:LiteAVSDK_Player:9.3.10769'
     implementation 'com.github.ctiao:DanmakuFlameMaster:0.9.25'
 }
