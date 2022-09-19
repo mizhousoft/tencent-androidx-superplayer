@@ -16,4 +16,20 @@
     <string name="superplayer_vipwatch_endwatch_tip">The trial is over, VIP members can watch the full video</string>
     <string name="superplayer_vipwatch_open_vip_tip">Open VIP membership</string>
     <string name="superplayer_vipwatch_retry_tip">Try again</string>
+    <string name="superplayer_resolution_name">%1$s (%2$dp)</string>
+    <string name="superplayer_flu">FLU</string>
+    <string name="superplayer_sd">SD</string>
+    <string name="superplayer_hd">HD</string>
+    <string name="superplayer_fsd">FSD</string>
+    <string name="superplayer_fhd">FHD</string>
+    <string name="superplayer_fhd2">FHD</string>
+    <string name="superplayer_2k">2K</string>
+    <string name="superplayer_4k">4K</string>
+    <string name="superplayer_current_quality">quality:</string>
+    <string name="superplayer_view_cache_list">video download list</string>
+    <string name="superplayer_start_download">start downloading video %1$s</string>
+    <string name="superplayer_download_failed">downloading video %1$s failed</string>
+    <string name="superplayer_download_quality_invalid">this video quality is invalid,download failed,please download video by others quality</string>
+    <string name="superplayer_danmu">Comment</string>
+    <string name="superplayer_replay">Replay</string>
 </resources>

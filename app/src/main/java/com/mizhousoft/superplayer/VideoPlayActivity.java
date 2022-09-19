@@ -1,6 +1,8 @@
 package com.mizhousoft.superplayer;
 
+import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -8,6 +10,8 @@ import com.mizhousoft.widget.util.StatusBarUtils;
 import com.tencent.liteav.demo.superplayer.SuperPlayerDef;
 import com.tencent.liteav.demo.superplayer.SuperPlayerModel;
 import com.tencent.liteav.demo.superplayer.SuperPlayerView;
+import com.tencent.liteav.demo.superplayer.model.ISuperPlayerListener;
+import com.tencent.liteav.demo.superplayer.model.entity.DynamicWaterConfig;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -35,9 +39,12 @@ public class VideoPlayActivity extends AppCompatActivity
         superPlayerView = findViewById(R.id.pv_super_player);
         superPlayerView.setPlayerViewCallback(new VideoPlayerViewCallback(this));
 
+        DynamicWaterConfig dynamicWaterConfig = new DynamicWaterConfig("1890xxxx3332正在观看视频", 40, Color.parseColor("#80FFFFFF"));
+
         SuperPlayerModel model = new SuperPlayerModel();
         model.title = "测试视频";
         model.url = "https://static-cdn.mizhousoft.com/material/v.f100030.mp4";
+        model.dynamicWaterConfig = dynamicWaterConfig;
         superPlayerView.playWithModel(model);
     }
 

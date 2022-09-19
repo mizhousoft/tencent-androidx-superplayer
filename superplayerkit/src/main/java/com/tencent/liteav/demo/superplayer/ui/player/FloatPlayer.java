@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.tencent.liteav.demo.superplayer.R;
 import com.tencent.liteav.demo.superplayer.SuperPlayerDef;
@@ -35,7 +36,7 @@ public class FloatPlayer extends AbsPlayer implements View.OnClickListener, VipW
     private float mYInView;         // 滑动事件距离自身上边界的距离
 
     private SuperPlayerDef.PlayerType mPlayType;        // 当前播放视频类型
-
+    private LinearLayout              dynamicWatermarkLayout;   //存放动态水印的layout
 
     public FloatPlayer(Context context) {
         super(context);
@@ -62,7 +63,21 @@ public class FloatPlayer extends AbsPlayer implements View.OnClickListener, VipW
         ivClose.setOnClickListener(this);
         mVipWatchView = findViewById(R.id.superplayer_vip_watch_view);
         mVipWatchView.setVipWatchViewClickListener(this);
+        dynamicWatermarkLayout = findViewById(R.id.superplayer_dynamic_watermark_layout);
     }
+
+    public void addDynamicWatermarkView(View view) {
+        if (dynamicWatermarkLayout != null) {
+            dynamicWatermarkLayout.addView(view);
+        }
+    }
+
+    public void removeDynamicWatermarkView() {
+        if (dynamicWatermarkLayout != null) {
+            dynamicWatermarkLayout.removeAllViews();
+        }
+    }
+
 
     /**
      * 获取悬浮窗中的视频播放view
@@ -122,6 +137,10 @@ public class FloatPlayer extends AbsPlayer implements View.OnClickListener, VipW
     @Override
     public void updatePlayType(SuperPlayerDef.PlayerType type) {
         mPlayType = type;
+    }
+
+    @Override
+    public void setVideoQualityVisible(boolean isShow) {
     }
 
     @Override
@@ -200,5 +219,4 @@ public class FloatPlayer extends AbsPlayer implements View.OnClickListener, VipW
             mControllerCallback.onCloseVipTip();
         }
     }
-
 }

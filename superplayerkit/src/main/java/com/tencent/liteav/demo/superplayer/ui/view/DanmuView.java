@@ -7,8 +7,9 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 import android.util.AttributeSet;
+import android.util.Log;
 
-import com.tencent.liteav.basic.log.TXCLog;
+import com.tencent.liteav.demo.superplayer.R;
 
 import java.util.Random;
 
@@ -147,7 +148,10 @@ public class DanmuView extends DanmakuView {
     }
 
     public void toggle(boolean on) {
-        TXCLog.i(TAG, "onToggleControllerView on:" + on);
+        Log.i(TAG, "onToggleControllerView on:" + on);
+        if (mDanmuHandler == null) {
+            return;
+        }
         if (on) {
             mDanmuHandler.sendEmptyMessageAtTime(DanmuHandler.MSG_SEND_DANMU, 100);
         } else {
@@ -175,7 +179,7 @@ public class DanmuView extends DanmakuView {
 
         private void sendDanmu() {
             int time = new Random().nextInt(300);
-            String content = "弹幕" + time + time;
+            String content = getContext().getResources().getString(R.string.superplayer_danmu) + time + time;
             addDanmaku(content, false);
         }
     }

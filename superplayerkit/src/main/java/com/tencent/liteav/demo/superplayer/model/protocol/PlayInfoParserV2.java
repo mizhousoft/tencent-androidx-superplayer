@@ -2,7 +2,6 @@ package com.tencent.liteav.demo.superplayer.model.protocol;
 
 import android.util.Log;
 
-import com.tencent.liteav.basic.log.TXCLog;
 import com.tencent.liteav.demo.superplayer.model.entity.PlayImageSpriteInfo;
 import com.tencent.liteav.demo.superplayer.model.entity.PlayInfoStream;
 import com.tencent.liteav.demo.superplayer.model.entity.PlayKeyFrameDescInfo;
@@ -48,6 +47,8 @@ public class PlayInfoParserV2 implements IPlayInfoParser {
     private List<VideoQuality> mVideoQualityList;       // 视频画质信息列表
     private VideoQuality       mDefaultVideoQuality;    // 默认视频画质
 
+    private String mCoverUrl;   // coverUrl
+
     public PlayInfoParserV2(JSONObject response) {
         mResponse = response;
         parsePlayInfo();
@@ -92,9 +93,13 @@ public class PlayInfoParserV2 implements IPlayInfoParser {
                 mMasterPlayList = parseMasterPlayList(videoInfo);
                 mTranscodePlayList = parseTranscodePlayList(videoInfo);
             }
+            JSONObject coverInfo = mResponse.optJSONObject("coverInfo");
+            if (coverInfo != null) {
+                mCoverUrl = coverInfo.optString("coverUrl");
+            }
             parseVideoInfo();
         } catch (JSONException e) {
-            TXCLog.e(TAG, Log.getStackTraceString(e));
+            Log.e(TAG, Log.getStackTraceString(e));
         }
     }
 
@@ -119,7 +124,7 @@ public class PlayInfoParserV2 implements IPlayInfoParser {
         JSONArray videoClassificationArray = playerInfo.getJSONArray("videoClassification");
         if (videoClassificationArray != null) {
             for (int i = 0; i < videoClassificationArray.length(); i++) {
-                JSONObject object = videoClassificationArray.getJSONObject(i);
+                JSONObject object = videoClassificationArray.optJSONObject(i);
 
                 VideoClassification classification = new VideoClassification();
                 classification.setId(object.getString("id"));
@@ -149,7 +154,7 @@ public class PlayInfoParserV2 implements IPlayInfoParser {
     private PlayImageSpriteInfo parseImageSpriteInfo(JSONObject imageSpriteInfo) throws JSONException {
         JSONArray imageSpriteList = imageSpriteInfo.getJSONArray("imageSpriteList");
         if (imageSpriteList != null) {
-            JSONObject spriteJSONObject = imageSpriteList.getJSONObject(imageSpriteList.length() - 1); //获取最后一个来解析
+            JSONObject spriteJSONObject = imageSpriteList.optJSONObject(imageSpriteList.length() - 1); //获取最后一个来解析
             PlayImageSpriteInfo info = new PlayImageSpriteInfo();
             info.webVttUrl = spriteJSONObject.getString("webVttUrl");
             JSONArray jsonArray = spriteJSONObject.getJSONArray("imageUrls");
@@ -175,8 +180,8 @@ public class PlayInfoParserV2 implements IPlayInfoParser {
         if (jsonArr != null) {
             List<PlayKeyFrameDescInfo> infoList = new ArrayList<>();
             for (int i = 0; i < jsonArr.length(); i++) {
-                String content = jsonArr.getJSONObject(i).getString("content");
-                long time = jsonArr.getJSONObject(i).getLong("timeOffset");
+                String content = jsonArr.optJSONObject(i).getString("content");
+                long time = jsonArr.optJSONObject(i).getLong("timeOffset");
                 float timeS = (float) (time / 1000.0);//转换为秒
                 PlayKeyFrameDescInfo info = new PlayKeyFrameDescInfo();
                 try {
@@ -201,7 +206,7 @@ public class PlayInfoParserV2 implements IPlayInfoParser {
      * @throws JSONException
      */
     private String parseName(JSONObject videoInfo) throws JSONException {
-        JSONObject basicInfo = videoInfo.getJSONObject("basicInfo");
+        JSONObject basicInfo = videoInfo.optJSONObject("basicInfo");
         if (basicInfo != null) {
             return basicInfo.getString("name");
         }
@@ -215,7 +220,7 @@ public class PlayInfoParserV2 implements IPlayInfoParser {
      * @return 源视频流信息对象
      */
     private PlayInfoStream parseSourceStream(JSONObject videoInfo) throws JSONException {
-        JSONObject sourceVideo = videoInfo.getJSONObject("sourceVideo");
+        JSONObject sourceVideo = videoInfo.optJSONObject("sourceVideo");
         if (sourceVideo != null) {
             PlayInfoStream stream = new PlayInfoStream();
             stream.url = sourceVideo.getString("url");
@@ -238,7 +243,7 @@ public class PlayInfoParserV2 implements IPlayInfoParser {
     private PlayInfoStream parseMasterPlayList(JSONObject videoInfo) throws JSONException {
         if (!videoInfo.has("masterPlayList"))
             return null;
-        JSONObject masterPlayList = videoInfo.getJSONObject("masterPlayList");
+        JSONObject masterPlayList = videoInfo.optJSONObject("masterPlayList");
         if (masterPlayList != null) {
             PlayInfoStream stream = new PlayInfoStream();
             stream.url = masterPlayList.getString("url");
@@ -304,7 +309,7 @@ public class PlayInfoParserV2 implements IPlayInfoParser {
         JSONArray transcodeList = videoInfo.optJSONArray("transcodeList");
         if (transcodeList != null) {
             for (int i = 0; i < transcodeList.length(); i++) {
-                JSONObject transcode = transcodeList.getJSONObject(i);
+                JSONObject transcode = transcodeList.optJSONObject(i);
                 PlayInfoStream stream = new PlayInfoStream();
                 stream.url = transcode.getString("url");
                 stream.duration = transcode.getInt("duration");
@@ -331,6 +336,11 @@ public class PlayInfoParserV2 implements IPlayInfoParser {
         //有主播放视频信息时，从中解析出支持多码率播放的url
         if (mMasterPlayList != null) {
             mURL = mMasterPlayList.getUrl();
+            if (mTranscodePlayList != null && mTranscodePlayList.size() != 0) {
+                PlayInfoStream stream = mTranscodePlayList.get(mDefaultVideoClassification);
+                mVideoQualityList = VideoQualityUtils.convertToVideoQualityList(mTranscodePlayList);
+                mDefaultVideoQuality = VideoQualityUtils.convertToVideoQuality(stream);
+            }
             return;
         }
         //无主播放信息，从转码视频信息中解析出各码流信息
@@ -358,7 +368,7 @@ public class PlayInfoParserV2 implements IPlayInfoParser {
         //无主播放信息、转码信息，从源视频信息中解析出播放信息
         if (mSourceStream != null) {
             if (mDefaultVideoClassification != null) {
-                mDefaultVideoQuality = VideoQualityUtils.convertToVideoQuality(mSourceStream, mDefaultVideoClassification);
+                mDefaultVideoQuality = VideoQualityUtils.convertToVideoQuality(mSourceStream);
                 mVideoQualityList = new ArrayList<>();
                 mVideoQualityList.add(mDefaultVideoQuality);
             }
@@ -394,6 +404,18 @@ public class PlayInfoParserV2 implements IPlayInfoParser {
     @Override
     public String getName() {
         return mName;
+    }
+
+
+    public String getCoverUrl() {
+        return mCoverUrl;
+    }
+
+    public int getDuration() {
+        if (null != mSourceStream) {
+            return mSourceStream.duration;
+        }
+        return 0;
     }
 
     /**

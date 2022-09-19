@@ -1,14 +1,17 @@
 package com.tencent.liteav.demo.superplayer.model.utils;
 
-import com.tencent.liteav.basic.log.TXCLog;
+import android.content.Context;
+
+import com.tencent.liteav.demo.superplayer.R;
 import com.tencent.liteav.demo.superplayer.model.entity.PlayInfoStream;
-import com.tencent.liteav.demo.superplayer.model.entity.ResolutionName;
 import com.tencent.liteav.demo.superplayer.model.entity.VideoQuality;
 import com.tencent.rtmp.TXBitrateItem;
+import com.tencent.rtmp.downloader.TXVodDownloadDataSource;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by yuejiaoli on 2018/7/6.
@@ -20,80 +23,31 @@ public class VideoQualityUtils {
 
     private static final String TAG = "TCVideoQualityUtil";
 
+    // 下载文件画质文字表驱动
+    private static final Map<Integer, Integer> DOWNLOAD_QUALITY_MAP = new HashMap<Integer, Integer>() {{
+        put(TXVodDownloadDataSource.QUALITY_FLU, R.string.superplayer_flu);
+        put(TXVodDownloadDataSource.QUALITY_SD, R.string.superplayer_sd);
+        put(TXVodDownloadDataSource.QUALITY_HD, R.string.superplayer_hd);
+        put(TXVodDownloadDataSource.QUALITY_FHD, R.string.superplayer_fhd2);
+        put(TXVodDownloadDataSource.QUALITY_2K, R.string.superplayer_2k);
+        put(TXVodDownloadDataSource.QUALITY_4K, R.string.superplayer_4k);
+        put(TXVodDownloadDataSource.QUALITY_OD, R.string.superplayer_original_picture);
+        put(TXVodDownloadDataSource.QUALITY_UNK, -1);
+    }};
+
     /**
      * 从比特流信息转换为清晰度信息
      *
      * @param bitrateItem
      * @return
      */
-    public static VideoQuality convertToVideoQuality(TXBitrateItem bitrateItem, int index) {
+    public static VideoQuality convertToVideoQuality(Context context, TXBitrateItem bitrateItem) {
         VideoQuality quality = new VideoQuality();
         quality.bitrate = bitrateItem.bitrate;
         quality.index = bitrateItem.index;
-        switch (index) {
-            case 0:
-                quality.name = "FLU";
-                quality.title = "流畅";
-                break;
-            case 1:
-                quality.name = "SD";
-                quality.title = "标清";
-                break;
-            case 2:
-                quality.name = "HD";
-                quality.title = "高清";
-                break;
-            case 3:
-                quality.name = "FHD";
-                quality.title = "超清";
-                break;
-            case 4:
-                quality.name = "2K";
-                quality.title = "2K";
-                break;
-            case 5:
-                quality.name = "4K";
-                quality.title = "4K";
-                break;
-            case 6:
-                quality.name = "8K";
-                quality.title = "8K";
-                break;
-        }
-        return quality;
-    }
-
-    /**
-     * 从源视频信息与视频类别信息转换为清晰度信息
-     *
-     * @param sourceStream
-     * @param classification
-     * @return
-     */
-    public static VideoQuality convertToVideoQuality(PlayInfoStream sourceStream, String classification) {
-        VideoQuality quality = new VideoQuality();
-        quality.bitrate = sourceStream.getBitrate();
-        if (classification.equals("FLU")) {
-            quality.name = "FLU";
-            quality.title = "流畅";
-        } else if (classification.equals("SD")) {
-            quality.name = "SD";
-            quality.title = "标清";
-        } else if (classification.equals("HD")) {
-            quality.name = "HD";
-            quality.title = "高清";
-        } else if (classification.equals("FHD")) {
-            quality.name = "FHD";
-            quality.title = "全高清";
-        } else if (classification.equals("2K")) {
-            quality.name = "2K";
-            quality.title = "2K";
-        } else if (classification.equals("4K")) {
-            quality.name = "4K";
-            quality.title = "4K";
-        }
-        quality.url = sourceStream.url;
-        quality.index = -1;
+        quality.height = bitrateItem.height;
+        quality.width = bitrateItem.width;
+        formatVideoQuality(context, quality);
         return quality;
     }
 
@@ -106,7 +60,6 @@ public class VideoQualityUtils {
     public static VideoQuality convertToVideoQuality(PlayInfoStream stream) {
         VideoQuality qulity = new VideoQuality();
         qulity.bitrate = stream.getBitrate();
-        qulity.name = stream.id;
         qulity.title = stream.name;
         qulity.url = stream.url;
         qulity.index = -1;
@@ -128,29 +81,88 @@ public class VideoQualityUtils {
         return videoQualities;
     }
 
-    /**
-     * 根据视频清晰度别名表从码率信息转换为视频清晰度
-     *
-     * @param bitrateItem     码率
-     * @param resolutionNames 清晰度别名表
-     * @return
-     */
-    public static VideoQuality convertToVideoQuality(TXBitrateItem bitrateItem, List<ResolutionName> resolutionNames) {
-        VideoQuality quality = new VideoQuality();
-        quality.bitrate = bitrateItem.bitrate;
-        quality.index = bitrateItem.index;
-        boolean getName = false;
-        for (ResolutionName resolutionName : resolutionNames) {
-            if (((resolutionName.width == bitrateItem.width && resolutionName.height == bitrateItem.height) || (resolutionName.width == bitrateItem.height && resolutionName.height == bitrateItem.width))
-                    && "video".equalsIgnoreCase(resolutionName.type)) {
-                quality.title = resolutionName.name;
-                getName = true;
-                break;
+    private static void formatVideoQuality(Context context, VideoQuality quality) {
+        int minValue = Math.min(quality.width, quality.height);
+        if (minValue == 240 || minValue == 180) {
+            quality.title = context
+                    .getString(R.string.superplayer_resolution_name,
+                            context.getString(R.string.superplayer_flu), minValue);
+        } else if (minValue == 480 || minValue == 360) {
+            quality.title = context
+                    .getString(R.string.superplayer_resolution_name,
+                            context.getString(R.string.superplayer_sd), minValue);
+        } else if (minValue == 540) {
+            quality.title = context
+                    .getString(R.string.superplayer_resolution_name,
+                            context.getString(R.string.superplayer_fsd), minValue);
+        } else if (minValue == 720) {
+            quality.title = context
+                    .getString(R.string.superplayer_resolution_name,
+                            context.getString(R.string.superplayer_hd), minValue);
+        } else if (minValue == 1080) {
+            quality.title = context
+                    .getString(R.string.superplayer_resolution_name,
+                            context.getString(R.string.superplayer_fhd2), minValue);
+        } else if (minValue == 1440) {
+            quality.title = context
+                    .getString(R.string.superplayer_resolution_name,
+                            context.getString(R.string.superplayer_2k), minValue);
+        } else if (minValue == 2160) {
+            quality.title = context
+                    .getString(R.string.superplayer_resolution_name,
+                            context.getString(R.string.superplayer_4k), minValue);
+        } else {
+            quality.title = context
+                    .getString(R.string.superplayer_resolution_name,
+                            "", minValue);
+        }
+    }
+
+    public static String transformToQualityName(String title) {
+        String qualityName = title;
+        if (title.contains("(")) {
+            if (title.charAt(0) == ' ' && title.contains(")")) {
+                qualityName = title.substring(title.indexOf('(') + 1, title.indexOf(')'));
+            } else {
+                qualityName = title.substring(0, title.indexOf('('));
             }
         }
-        if (!getName) {
-            TXCLog.i(TAG, "error: could not get quality name!");
+        return qualityName;
+    }
+
+    /**
+     * 根据videoQuality，转化为视频下载需要用到的画质id
+     *
+     * @param quality 视频画质
+     * @return {@link TXVodDownloadDataSource} QUALITY常量
+     */
+    public static int getCacheVideoQualityIndex(VideoQuality quality) {
+        if (null == quality) {
+            return TXVodDownloadDataSource.QUALITY_UNK;
         }
-        return quality;
+        int minValue = Math.min(quality.width, quality.height);
+        int cacheQualityIndex;
+        if (minValue == 240 || minValue == 180) {
+            cacheQualityIndex = TXVodDownloadDataSource.QUALITY_FLU;
+        } else if (minValue == 480 || minValue == 360) {
+            cacheQualityIndex = TXVodDownloadDataSource.QUALITY_SD;
+        } else if (minValue == 540) {
+            cacheQualityIndex = TXVodDownloadDataSource.QUALITY_SD;
+        } else if (minValue == 720) {
+            cacheQualityIndex = TXVodDownloadDataSource.QUALITY_HD;
+        } else if (minValue == 1080) {
+            cacheQualityIndex = TXVodDownloadDataSource.QUALITY_FHD;
+        } else if (minValue == 1440) {
+            cacheQualityIndex = TXVodDownloadDataSource.QUALITY_2K;
+        } else if (minValue == 2160) {
+            cacheQualityIndex = TXVodDownloadDataSource.QUALITY_4K;
+        } else {
+            cacheQualityIndex = TXVodDownloadDataSource.QUALITY_UNK;
+        }
+        return cacheQualityIndex;
+    }
+
+    public static Integer getNameByCacheQualityId(int cacheQualityId) {
+        return DOWNLOAD_QUALITY_MAP.get(cacheQualityId);
     }
 }
