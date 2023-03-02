@@ -457,7 +457,7 @@ public class SuperPlayerView extends RelativeLayout {
         if (mPlayerViewCallback != null) {
             mPlayerViewCallback.onStartFullScreenPlay();
         }
-        rotateScreenOrientation(SuperPlayerDef.Orientation.LANDSCAPE);
+        rotateScreenOrientation(mCurrentSuperPlayerModel.orientation);
         mSuperPlayer.switchPlayMode(playerMode);
     }
 

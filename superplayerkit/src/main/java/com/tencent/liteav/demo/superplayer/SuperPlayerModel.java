@@ -100,6 +100,8 @@ public class SuperPlayerModel {
 
     public boolean isEnableCache = false; // 是否开启缓存能力,默认关闭
 
+    public SuperPlayerDef.Orientation orientation = SuperPlayerDef.Orientation.LANDSCAPE;
+
     public static class SuperPlayerURL {
         public SuperPlayerURL(String url, String qualityName) {
             this.qualityName = qualityName;
@@ -113,5 +115,15 @@ public class SuperPlayerModel {
 
         public String url = ""; // 该清晰度对应的地址
 
+    }
+
+    public SuperPlayerDef.Orientation getOrientation()
+    {
+        return orientation;
+    }
+
+    public void setOrientation(SuperPlayerDef.Orientation orientation)
+    {
+        this.orientation = orientation;
     }
 }

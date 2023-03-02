@@ -43,8 +43,9 @@ public class VideoPlayActivity extends AppCompatActivity
 
         SuperPlayerModel model = new SuperPlayerModel();
         model.title = "测试视频";
-        model.url = "https://static-cdn.mizhousoft.com/material/v.f100030.mp4";
+        model.url = "https://static-cdn.mizhousoft.com/material/shuping.mp4";
         model.dynamicWaterConfig = dynamicWaterConfig;
+        model.setOrientation(SuperPlayerDef.Orientation.LANDSCAPE);
         superPlayerView.playWithModel(model);
     }
 
