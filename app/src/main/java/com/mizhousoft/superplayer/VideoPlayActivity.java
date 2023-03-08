@@ -1,8 +1,9 @@
 package com.mizhousoft.superplayer;
 
+import android.content.ContentResolver;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
+import android.provider.Settings;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -10,7 +11,6 @@ import com.mizhousoft.widget.util.StatusBarUtils;
 import com.tencent.liteav.demo.superplayer.SuperPlayerDef;
 import com.tencent.liteav.demo.superplayer.SuperPlayerModel;
 import com.tencent.liteav.demo.superplayer.SuperPlayerView;
-import com.tencent.liteav.demo.superplayer.model.ISuperPlayerListener;
 import com.tencent.liteav.demo.superplayer.model.entity.DynamicWaterConfig;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,6 +33,10 @@ public class VideoPlayActivity extends AppCompatActivity
         //设置状态栏为透明
         window.setStatusBarColor(getResources().getColor(R.color.black));
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        // 优化屏幕亮度
+        int brightness = getScreenBrightness();
+        window.getAttributes().screenBrightness = brightness / 255.0f;
 
         StatusBarUtils.setStatusBarDarkMode(this);
 
@@ -73,8 +77,7 @@ public class VideoPlayActivity extends AppCompatActivity
         // 停止播放
         if (superPlayerView.getPlayerMode() != SuperPlayerDef.PlayerMode.FLOAT)
         {
-            if (superPlayerView.getPlayerState() == SuperPlayerDef.PlayerState.PLAYING
-                    || superPlayerView.getPlayerState() == SuperPlayerDef.PlayerState.LOADING)
+            if (superPlayerView.getPlayerState() == SuperPlayerDef.PlayerState.PLAYING || superPlayerView.getPlayerState() == SuperPlayerDef.PlayerState.LOADING)
             {
                 superPlayerView.onPause();
             }
@@ -91,5 +94,13 @@ public class VideoPlayActivity extends AppCompatActivity
         {
             superPlayerView.resetPlayer();
         }
+    }
+
+    private int getScreenBrightness()
+    {
+        ContentResolver contentResolver = this.getContentResolver();
+        int defVal = 125;
+
+        return Settings.System.getInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS, defVal);
     }
 }
