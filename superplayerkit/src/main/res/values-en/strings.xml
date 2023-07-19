@@ -21,7 +21,6 @@
     <string name="superplayer_sd">SD</string>
     <string name="superplayer_hd">HD</string>
     <string name="superplayer_fsd">FSD</string>
-    <string name="superplayer_fhd">FHD</string>
     <string name="superplayer_fhd2">FHD</string>
     <string name="superplayer_2k">2K</string>
     <string name="superplayer_4k">4K</string>
@@ -32,4 +31,10 @@
     <string name="superplayer_download_quality_invalid">this video quality is invalid,download failed,please download video by others quality</string>
     <string name="superplayer_danmu">Comment</string>
     <string name="superplayer_replay">Replay</string>
+    <string name="superplayer_subtitle">Subtitles</string>
+    <string name="superplayer_audio_tracks">Audio Tracks</string>
+    <string name="superplayer_off">Off</string>
+    <string name="superplayer_audio_track">Audio Track </string>
+    <string name="superplayer_playforward">Fast Forward</string>
+    <string name="superplayer_playbackward">Fast Rewind</string>
 </resources>

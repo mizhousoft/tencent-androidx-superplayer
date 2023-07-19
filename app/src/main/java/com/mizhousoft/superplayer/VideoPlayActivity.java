@@ -49,8 +49,8 @@ public class VideoPlayActivity extends AppCompatActivity
         model.title = "测试视频";
         model.url = "https://static-cdn.mizhousoft.com/material/shuping.mp4";
         model.dynamicWaterConfig = dynamicWaterConfig;
-        model.setOrientation(SuperPlayerDef.Orientation.LANDSCAPE);
-        superPlayerView.playWithModel(model);
+        model.setOrientation(SuperPlayerDef.Orientation.PORTRAIT);
+        superPlayerView.playWithModelNeedLicence(model);
     }
 
     @Override

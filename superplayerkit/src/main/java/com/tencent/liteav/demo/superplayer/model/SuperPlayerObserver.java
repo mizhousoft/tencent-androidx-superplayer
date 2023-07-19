@@ -5,6 +5,7 @@ import com.tencent.liteav.demo.superplayer.model.entity.PlayImageSpriteInfo;
 import com.tencent.liteav.demo.superplayer.model.entity.PlayKeyFrameDescInfo;
 import com.tencent.liteav.demo.superplayer.model.entity.VideoQuality;
 import com.tencent.rtmp.TXLivePlayer;
+import com.tencent.rtmp.TXTrackInfo;
 
 import java.util.List;
 
@@ -49,7 +50,7 @@ public abstract class SuperPlayerObserver {
      * @param current
      * @param duration
      */
-    public void onPlayProgress(long current, long duration) {
+    public void onPlayProgress(long current, long duration, long playable) {
     }
 
     public void onSeek(int position) {
@@ -77,6 +78,14 @@ public abstract class SuperPlayerObserver {
     }
 
     public void onRcvFirstIframe(){
+
+    }
+
+    public void onRcvTrackInformation(List<TXTrackInfo> infoList) {
+
+    }
+
+    public void onRcvSubTitleTrackInformation(List<TXTrackInfo> infoList) {
 
     }
 }

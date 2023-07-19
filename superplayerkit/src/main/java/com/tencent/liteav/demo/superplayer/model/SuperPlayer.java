@@ -3,10 +3,14 @@ package com.tencent.liteav.demo.superplayer.model;
 import com.tencent.liteav.demo.superplayer.SuperPlayerDef;
 import com.tencent.liteav.demo.superplayer.SuperPlayerModel;
 import com.tencent.liteav.demo.superplayer.model.entity.VideoQuality;
+import com.tencent.liteav.txcplayer.model.TXSubtitleRenderModel;
 import com.tencent.rtmp.TXLivePlayer;
+import com.tencent.rtmp.TXTrackInfo;
 import com.tencent.rtmp.ui.TXCloudVideoView;
+import com.tencent.rtmp.ui.TXSubtitleView;
 
 import java.util.List;
+import java.util.Map;
 
 public interface SuperPlayer {
 
@@ -143,4 +147,27 @@ public interface SuperPlayer {
     void setAutoPlay(boolean isAutoPlay);
 
     void setNeedToPause(boolean value);
+
+    void onClickSoundTrackItem(TXTrackInfo clickInfo);
+
+    void onClickSubTitleItem(TXTrackInfo clickInfo);
+
+    void setSubTitleView(TXSubtitleView subTitleView);
+
+    void onSubtitleSettingDone(TXSubtitleRenderModel model);
+
+    /**
+     * 往回seek并且播放
+     */
+    void playBackward(int position);
+
+    /**
+     * 往前倍速播放
+     */
+    void playForward();
+
+    /**
+     * 恢复倍速和播放
+     */
+    void revertSpeedRate();
 }

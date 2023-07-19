@@ -1,5 +1,6 @@
 ext {
     libraryGroup = 'com.mizhousoft.androidx'
+    commonArtifactId = "tencent-superplayer-common"
     libraryArtifactId = "tencent-superplayer"
-    libraryVersion = '1.0.0-SNAPSHOT'
+    libraryVersion = '2.0.0-SNAPSHOT'
 }
