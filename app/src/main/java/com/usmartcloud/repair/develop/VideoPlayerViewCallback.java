@@ -2,7 +2,7 @@ package com.usmartcloud.repair.develop;
 
 import android.util.Log;
 
-import com.mizhousoft.repair.TXVideoConstants;
+import com.mizhousoft.superplayer.TXVideoConstants;
 import com.mizhousoft.widget.toast.SimplexToast;
 import com.tencent.liteav.demo.superplayer.SuperPlayerView;
 

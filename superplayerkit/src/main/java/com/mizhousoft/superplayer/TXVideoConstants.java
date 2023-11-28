@@ -1,4 +1,4 @@
-package com.mizhousoft.repair;
+package com.mizhousoft.superplayer;
 
 public interface TXVideoConstants
 {

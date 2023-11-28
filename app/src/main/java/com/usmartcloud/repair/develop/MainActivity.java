@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-import com.mizhousoft.repair.SuperPlayerLicense;
+import com.mizhousoft.superplayer.SuperPlayerLicense;
 import com.mizhousoft.widget.toast.SimplexToast;
 
 import androidx.appcompat.app.AppCompatActivity;
