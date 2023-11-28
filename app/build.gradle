@@ -3,12 +3,12 @@ plugins {
 }
 
 android {
-    namespace 'com.mizhousoft.superplayer'
+    namespace 'com.usmartcloud.repair.develop'
 
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.mizhousoft.superplayer"
+        applicationId "com.usmartcloud.repair.develop"
         minSdk 21
         targetSdk 34
         versionCode 100
@@ -41,7 +41,6 @@ android {
             debuggable true
             minifyEnabled false
             shrinkResources false
-            zipAlignEnabled true
             signingConfig signingConfigs.debugx
         }
 
@@ -49,7 +48,6 @@ android {
             debuggable false
             minifyEnabled true
             shrinkResources true
-            zipAlignEnabled true
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
