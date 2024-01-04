@@ -64,6 +64,12 @@ public class VideoPlayerViewCallback implements SuperPlayerView.OnSuperPlayerVie
     }
 
     @Override
+    public void onPlayProgress(long current, long duration, long playable)
+    {
+        Log.i("TXVod", String.valueOf("onPlayProgress ") + current + " " + duration + " " + playable);
+    }
+
+    @Override
     public void onError(int code)
     {
         if (TXVideoConstants.PLAY_ERR_NET_DISCONNECT_1 == code || TXVideoConstants.PLAY_ERR_NET_DISCONNECT_2 == code)

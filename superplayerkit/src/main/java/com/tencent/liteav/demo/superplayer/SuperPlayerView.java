@@ -1038,6 +1038,14 @@ public class SuperPlayerView extends RelativeLayout
         void onPlayEnd();
 
         /**
+         * 播放时长
+         * @param current
+         * @param duration
+         * @param playable
+         */
+        void onPlayProgress(long current, long duration, long playable);
+
+        /**
          * Callback when playback fails
          *
          * 当播放失败的时候回调
@@ -1194,6 +1202,10 @@ public class SuperPlayerView extends RelativeLayout
             mWindowPlayer.updateVideoProgress(current, duration,playable);
             mFullScreenPlayer.updateVideoProgress(current, duration,playable);
             mFloatPlayer.updateVideoProgress(current, duration,playable);
+
+            if (mPlayerViewCallback != null) {
+                mPlayerViewCallback.onPlayProgress(current, duration, playable);
+            }
         }
 
         @Override
