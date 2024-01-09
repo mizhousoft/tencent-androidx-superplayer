@@ -1,10 +1,14 @@
 package com.tencent.liteav.demo.superplayer.ui.helper;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
+import android.os.Build;
+
+import static android.content.Context.RECEIVER_EXPORTED;
 
 public class VolumeChangeHelper {
 
@@ -31,7 +35,14 @@ public class VolumeChangeHelper {
         IntentFilter filter = new IntentFilter();
         filter.addAction(VOLUME_CHANGE_ACTION);
         if (mVolumeBroadCastReceiver != null) {
-            mContext.registerReceiver(mVolumeBroadCastReceiver,filter);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            {
+                mContext.registerReceiver(mVolumeBroadCastReceiver,filter, RECEIVER_EXPORTED);
+            }
+            else
+            {
+                mContext.registerReceiver(mVolumeBroadCastReceiver,filter);
+            }
         }
     }
 

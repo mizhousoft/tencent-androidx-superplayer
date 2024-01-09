@@ -25,6 +25,8 @@ import com.tencent.rtmp.ui.TXCloudVideoView;
 
 import java.util.ArrayList;
 
+import static android.content.Context.RECEIVER_EXPORTED;
+
 public class PictureInPictureHelper implements ServiceConnection {
 
     private static final String PIP_ACTION_MEDIA_CONTROL = "media_control";
@@ -80,7 +82,15 @@ public class PictureInPictureHelper implements ServiceConnection {
                 }
             }
         };
-        ((Activity) mContext).registerReceiver(mReceiver, new IntentFilter(PIP_ACTION_MEDIA_CONTROL));
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+        {
+            ((Activity) mContext).registerReceiver(mReceiver, new IntentFilter(PIP_ACTION_MEDIA_CONTROL), RECEIVER_EXPORTED);
+        }
+        else
+        {
+            ((Activity) mContext).registerReceiver(mReceiver, new IntentFilter(PIP_ACTION_MEDIA_CONTROL));
+        }
     }
 
     public void setListener(OnPictureInPictureClickListener listener) {

@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
+import android.os.Build;
 import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -25,6 +26,8 @@ import android.widget.Switch;
 import com.tencent.liteav.demo.superplayer.R;
 import com.tencent.liteav.demo.superplayer.SuperPlayerDef;
 import com.tencent.liteav.demo.superplayer.SuperPlayerGlobalConfig;
+
+import static android.content.Context.RECEIVER_EXPORTED;
 
 /**
  * <p>
@@ -358,7 +361,14 @@ public class VodMoreView extends RelativeLayout implements RadioGroup.OnCheckedC
         mVolumeBroadcastReceiver = new VolumeBroadcastReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction(VOLUME_CHANGED_ACTION);
-        mContext.registerReceiver(mVolumeBroadcastReceiver, filter);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+        {
+            mContext.registerReceiver(mVolumeBroadcastReceiver, filter, RECEIVER_EXPORTED);
+        }
+        else
+        {
+            mContext.registerReceiver(mVolumeBroadcastReceiver, filter);
+        }
     }
 
     /**
