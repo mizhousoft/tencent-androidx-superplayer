@@ -1,4 +1,4 @@
-package com.tencent.liteav.demo.common;
+package com.tencent.liteav.demo.superplayer.permission;
 
 import android.app.Dialog;
 import android.os.Bundle;
@@ -13,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
+
+import com.tencent.liteav.demo.superplayer.R;
 
 
 public class PermissionIntroductionDialog extends DialogFragment {

@@ -1,29 +1,35 @@
-package com.tencent.liteav.demo.common.utils;
+package com.tencent.liteav.demo.superplayer.permission;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import java.util.Map;
 
-/**
- * 保存信息配置类
- */
 public class SharedPreferenceUtils {
-    private SharedPreferences        mSharedPreferences;
+
+    private SharedPreferences mSharedPreferences;
     private SharedPreferences.Editor mEditor;
 
-    public SharedPreferenceUtils(@NonNull Context context, String fileName) {
+    private static volatile SharedPreferenceUtils instance;
+
+    public static SharedPreferenceUtils getInstance(String fileName, Context context) {
+        if (instance == null) {
+            synchronized (SharedPreferenceUtils.class) {
+                if (instance == null) {
+                    instance = new SharedPreferenceUtils(fileName, context);
+                }
+            }
+        }
+        return instance;
+    }
+
+    private SharedPreferenceUtils(String fileName, @NonNull Context context) {
         mSharedPreferences = context.getSharedPreferences(fileName,
                 Context.MODE_PRIVATE);
         mEditor = mSharedPreferences.edit();
     }
 
-    /**
-     * 存储
-     */
     public void put(String key, Object object) {
         if (object instanceof String) {
             mEditor.putString(key, (String) object);
@@ -38,7 +44,7 @@ public class SharedPreferenceUtils {
         } else {
             mEditor.putString(key, object.toString());
         }
-        mEditor.commit();
+        mEditor.apply();
     }
 
     /**
@@ -61,32 +67,20 @@ public class SharedPreferenceUtils {
         }
     }
 
-    /**
-     * 移除某个key值已经对应的值
-     */
     public void remove(String key) {
         mEditor.remove(key);
-        mEditor.commit();
+        mEditor.apply();
     }
 
-    /**
-     * 清除所有数据
-     */
     public void clear() {
         mEditor.clear();
-        mEditor.commit();
+        mEditor.apply();
     }
 
-    /**
-     * 查询某个key是否存在
-     */
     public Boolean contain(String key) {
         return mSharedPreferences.contains(key);
     }
 
-    /**
-     * 返回所有的键值对
-     */
     public Map<String, ?> getAll() {
         return mSharedPreferences.getAll();
     }

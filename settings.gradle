@@ -50,5 +50,5 @@ dependencyResolutionManagement {
     }
 }
 
-include ':app', ':superplayerkit', ':common'
+include ':app', ':superplayerkit'
 rootProject.name = "Tencent Superplayer"

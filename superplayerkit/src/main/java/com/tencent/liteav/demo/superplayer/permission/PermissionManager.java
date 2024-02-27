@@ -1,4 +1,4 @@
-package com.tencent.liteav.demo.common.manager;
+package com.tencent.liteav.demo.superplayer.permission;
 
 import android.Manifest;
 import android.content.Context;
@@ -8,10 +8,7 @@ import android.os.Build;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 
-import com.tencent.liteav.demo.common.PermissionIntroductionDialog;
-import com.tencent.liteav.demo.common.R;
-import com.tencent.liteav.demo.common.utils.SharedPreferenceUtils;
-
+import com.tencent.liteav.demo.superplayer.R;
 
 public class PermissionManager {
     private static final long FORTY_EIGHT_HOURS = 60 * 1000 * 48 * 60;
@@ -44,7 +41,7 @@ public class PermissionManager {
     public PermissionManager(Context context, PermissionType type) {
         mContext = context;
         mPermissionType = type;
-        sharedPreferenceUtils = new SharedPreferenceUtils(mContext, SHARED_PREFERENCE_FILE_NAME_PERMISSION);
+        sharedPreferenceUtils = SharedPreferenceUtils.getInstance(SHARED_PREFERENCE_FILE_NAME_PERMISSION,mContext);
         if (type.equals(PermissionType.STORAGE)) {
             mDialog = new PermissionIntroductionDialog(mContext.getString(R.string.permission_introduction_write_title),
                     mContext.getString(R.string.permission_introduction_write),

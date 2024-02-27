@@ -38,6 +38,4 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.12.0'
     implementation 'com.tencent.liteav:LiteAVSDK_Player:11.6.0.13641'
     implementation 'com.github.ctiao:DanmakuFlameMaster:0.9.25'
-
-    implementation 'com.mizhousoft.androidx:tencent-superplayer-common:2.0.0-SNAPSHOT'
 }
