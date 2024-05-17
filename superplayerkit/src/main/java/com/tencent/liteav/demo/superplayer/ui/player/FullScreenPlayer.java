@@ -1258,9 +1258,10 @@ public class FullScreenPlayer extends AbsPlayer implements View.OnClickListener,
         mDownloadMenuView.dismiss();
     }
 
-    public void setVodSelectionViewPositionAndData(List<TXTrackInfo> models) {
+    public void setVodSelectionViewPositionAndData(List<TXTrackInfo> models, TXTrackInfo lastSelected) {
         mVodSoundTrackView.setModelList(models);
-
+        mVodSoundTrackView.doInitAudioTrackSelect(lastSelected);
+        mIvSoundTrack.setVisibility(GONE);
     }
 
     public void setVodSubtitlesViewPositionAndData(List<TXTrackInfo> models) {
