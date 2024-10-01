@@ -1290,7 +1290,8 @@ public class SuperPlayerView extends RelativeLayout
         public void onRcvFirstIframe() {
             super.onRcvFirstIframe();
             mWindowPlayer.toggleCoverView(false);
-            if (!TextUtils.isEmpty(mCurrentSuperPlayerModel.coverPictureUrl)) {
+            boolean curIsInPipMode = mPictureInPictureHelper!=null && mPictureInPictureHelper.isInPipMode();
+            if (!TextUtils.isEmpty(mCurrentSuperPlayerModel.coverPictureUrl) && !curIsInPipMode) {
                 mWindowPlayer.showPIPIV(mCurrentSuperPlayerModel.vipWatchMode == null);
             }
             mFullScreenPlayer.toggleCoverView(false);
@@ -1506,6 +1507,12 @@ public class SuperPlayerView extends RelativeLayout
         mSuperPlayer.seek((int) mProgress);
         mWindowPlayer.updateVideoProgress(mProgress, mDuration, mPlayAble);
         mFullScreenPlayer.updateVideoProgress(mProgress, mDuration, mPlayAble);
+    }
+
+    public void onPictureInPictureModeChanged(boolean isInPictureInPictureMode) {
+        if (mPictureInPictureHelper != null) {
+            mPictureInPictureHelper.onPictureInPictureModeChanged(isInPictureInPictureMode);
+        }
     }
 
     public void showPIPIV(boolean isShow) {
