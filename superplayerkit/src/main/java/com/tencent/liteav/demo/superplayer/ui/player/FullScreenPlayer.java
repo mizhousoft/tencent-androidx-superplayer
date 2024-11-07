@@ -1073,6 +1073,11 @@ public class FullScreenPlayer extends AbsPlayer implements View.OnClickListener,
         int curProgress = seekBar.getProgress();
         int maxProgress = seekBar.getMax();
 
+        if(null == mPlayType)
+        {
+            return;
+        }
+
         switch (mPlayType) {
             case VOD:
                 if (curProgress >= 0 && curProgress <= maxProgress) {
