@@ -883,7 +883,8 @@ public class SuperPlayerView extends RelativeLayout
             } else if (mPlayAction == PLAY_ACTION_MANUAL_PLAY) {
                 mSuperPlayer.play(mCurrentSuperPlayerModel);
             }
-        } else if (mSuperPlayer.getPlayerState() == SuperPlayerDef.PlayerState.END) { //重播
+        } else if (mSuperPlayer.getPlayerState() == SuperPlayerDef.PlayerState.END
+                ||mSuperPlayer.getPlayerState() == SuperPlayerDef.PlayerState.ERROR ) { //重播 or 失败
             mSuperPlayer.reStart();
         } else if (mSuperPlayer.getPlayerState() == SuperPlayerDef.PlayerState.PAUSE) { //继续播放
             mSuperPlayer.resume();
@@ -1186,6 +1187,12 @@ public class SuperPlayerView extends RelativeLayout
                 }
             }
             notifyCallbackPlayEnd();
+        }
+
+        @Override
+        public void onPlayError() {
+            mWindowPlayer.updatePlayState(SuperPlayerDef.PlayerState.ERROR);
+            mFullScreenPlayer.updatePlayState(SuperPlayerDef.PlayerState.ERROR);
         }
 
         @Override
