@@ -69,6 +69,7 @@ public class VodMoreView extends RelativeLayout implements RadioGroup.OnCheckedC
     private RadioButton             mRbSpeed125;
     private RadioButton             mRbSpeed15;
     private RadioButton             mRbSpeed2;
+    private RadioButton             mRbSpeed3;
     private LinearLayout            mLayoutSpeed;
     private LinearLayout            mLayoutMirror;
     private VolumeBroadcastReceiver mVolumeBroadcastReceiver;
@@ -98,6 +99,7 @@ public class VodMoreView extends RelativeLayout implements RadioGroup.OnCheckedC
         mRbSpeed125 = (RadioButton) findViewById(R.id.superplayer_rb_speed125);
         mRbSpeed15 = (RadioButton) findViewById(R.id.superplayer_rb_speed15);
         mRbSpeed2 = (RadioButton) findViewById(R.id.superplayer_rb_speed2);
+        mRbSpeed3 = (RadioButton) findViewById(R.id.superplayer_rb_speed3);
 
         mRadioGroup.setOnCheckedChangeListener(this);
         mSeekBarVolume = (SeekBar) findViewById(R.id.superplayer_sb_audio);
@@ -276,6 +278,12 @@ public class VodMoreView extends RelativeLayout implements RadioGroup.OnCheckedC
                 mCallback.onSpeedChange(2.0f);
             }
 
+        }else if (checkedId == R.id.superplayer_rb_speed3) {
+            mRbSpeed3.setChecked(true);
+            if (mCallback != null) {
+                mCallback.onSpeedChange(3.0f);
+            }
+
         }
     }
 
@@ -332,6 +340,7 @@ public class VodMoreView extends RelativeLayout implements RadioGroup.OnCheckedC
         mRbSpeed125.setChecked(false);
         mRbSpeed15.setChecked(false);
         mRbSpeed2.setChecked(false);
+        mRbSpeed3.setChecked(false);
         mRadioGroup.setOnCheckedChangeListener(this);
         if (mSwitchMirror.isChecked()) {
             mSwitchMirror.setOnCheckedChangeListener(null);

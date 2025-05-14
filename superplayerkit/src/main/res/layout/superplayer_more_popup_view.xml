@@ -127,7 +127,7 @@
                     android:button="@null"
                     android:checked="true"
                     android:gravity="center"
-                    android:text="1.0X"
+                    android:text="1.0"
                     android:textColor="@color/superplayer_vod_player_text_color" />
 
                 <RadioButton
@@ -137,7 +137,7 @@
                     android:layout_weight="1"
                     android:button="@null"
                     android:gravity="center"
-                    android:text="1.25X"
+                    android:text="1.25"
                     android:textColor="@color/superplayer_vod_player_text_color" />
 
                 <RadioButton
@@ -147,7 +147,7 @@
                     android:layout_weight="1"
                     android:button="@null"
                     android:gravity="center"
-                    android:text="1.5X"
+                    android:text="1.5"
                     android:textColor="@color/superplayer_vod_player_text_color" />
 
                 <RadioButton
@@ -157,7 +157,17 @@
                     android:layout_weight="1"
                     android:button="@null"
                     android:gravity="center"
-                    android:text="2.0X"
+                    android:text="2.0"
+                    android:textColor="@color/superplayer_vod_player_text_color" />
+
+                <RadioButton
+                    android:id="@+id/superplayer_rb_speed3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:text="3.0"
                     android:textColor="@color/superplayer_vod_player_text_color" />
             </RadioGroup>
         </LinearLayout>
