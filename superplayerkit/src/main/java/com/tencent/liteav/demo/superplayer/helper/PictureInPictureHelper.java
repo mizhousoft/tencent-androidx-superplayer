@@ -1,5 +1,6 @@
 package com.tencent.liteav.demo.superplayer.helper;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AppOpsManager;
 import android.app.PendingIntent;
@@ -21,7 +22,7 @@ import androidx.annotation.DrawableRes;
 import com.tencent.liteav.demo.superplayer.R;
 import com.tencent.liteav.demo.superplayer.SuperPlayerDef;
 import com.tencent.liteav.demo.superplayer.SuperPlayerGlobalConfig;
-import com.tencent.rtmp.ui.TXCloudVideoView;
+import com.tencent.liteav.demo.superplayer.ui.player.SuperPlayerRenderView;
 
 import java.util.ArrayList;
 
@@ -48,6 +49,7 @@ public class PictureInPictureHelper implements ServiceConnection {
     private boolean isInPipMode;
 
 
+    @SuppressLint({"WrongConstant", "UnspecifiedRegisterReceiverFlag"})
     public PictureInPictureHelper(Context context) {
         mContext = context;
         mReceiver = new BroadcastReceiver() {
@@ -99,13 +101,13 @@ public class PictureInPictureHelper implements ServiceConnection {
     }
 
 
-    public void enterPictureInPictureMode(SuperPlayerDef.PlayerState state, TXCloudVideoView mTXCloudVideoView) {
+    public void enterPictureInPictureMode(SuperPlayerDef.PlayerState state, SuperPlayerRenderView renderView) {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O && hasPipPermission((Activity) mContext)) {
             if (mPictureInPictureParamsBuilder == null) {
                 mPictureInPictureParamsBuilder = new PictureInPictureParams.Builder();
             }
-            int mVideoWith = mTXCloudVideoView.getWidth();
-            int mVideoHeight = mTXCloudVideoView.getHeight();
+            int mVideoWith = renderView.getWidth();
+            int mVideoHeight = renderView.getHeight();
             if (mVideoWith != 0 && mVideoHeight != 0) {
                 Rational aspectRatio = new Rational(mVideoWith, mVideoHeight);
                 mPictureInPictureParamsBuilder.setAspectRatio(aspectRatio);
