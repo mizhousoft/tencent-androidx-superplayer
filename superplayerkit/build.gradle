@@ -2,7 +2,7 @@ plugins {
     id 'com.android.library'
 }
 
-apply from: "./deploy.gradle"
+apply from: "../deploy.gradle"
 
 android {
     namespace 'com.tencent.liteav.demo.superplayer'
